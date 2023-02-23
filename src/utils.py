@@ -45,7 +45,6 @@ def train_one_epoch(training_loader, val_loader, optimizer, network, loss_fn, pr
     running_loss = 0.
     last_loss = 0.
     tr_acc = 0.
-    network.train()
 
     for i, data in enumerate(training_loader):
         # Every data instance is an input + label pair
@@ -74,21 +73,21 @@ def train_one_epoch(training_loader, val_loader, optimizer, network, loss_fn, pr
             running_loss = 0.
     tr_acc = float(tr_acc / len(training_loader))
 
-
-    network.eval()
     val_acc = 0.
     running_loss = 0.
-    for i, data in enumerate(val_loader):
-        # Every data instance is an input + label pair
-        inputs, labels = data
-        outputs = network(inputs)
-        # Compute the loss and its gradients
-        loss = loss_fn(outputs, labels)
-        correct_indexes = torch.argmax(labels ,1)
-        prect_indexes = torch.argmax(outputs, 1)
-        val_acc += float(torch.sum(correct_indexes == prect_indexes))/len(correct_indexes)
-        # Gather data and report
-        running_loss += loss.item()
+    with torch.no_grad():
+
+        for i, data in enumerate(val_loader):
+            # Every data instance is an input + label pair
+            inputs, labels = data
+            outputs = network(inputs)
+            # Compute the loss and its gradients
+            loss = loss_fn(outputs, labels)
+            correct_indexes = torch.argmax(labels ,1)
+            prect_indexes = torch.argmax(outputs, 1)
+            val_acc += float(torch.sum(correct_indexes == prect_indexes))/len(correct_indexes)
+            # Gather data and report
+            running_loss += loss.item()
 
     val_loss = float(running_loss/len(val_loader))
     val_acc = float(val_acc/len(val_loader))

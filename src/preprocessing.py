@@ -21,6 +21,7 @@ def dataset_to_torch_save(dataset, label_categories, label_info):
         one_pos = label_info[label]
         arr_y = torch.zeros((num_examples, len(label_categories)))
         arr_y[:, one_pos] = 1
+        print(f'Making of label {label}')
         dataset_torch = torch.utils.data.TensorDataset(arr_x, arr_y)
         torch.save(dataset_torch, f'torch_data/dataset_{label}.pt')
 

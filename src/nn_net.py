@@ -26,6 +26,7 @@ def conv2d_output_size(input_size, out_channels, padding, kernel_size, stride, d
     )
     return output_size
 
+
 class Net(nn.Module):
     def __init__(self, c, d, h, outputs):
         filter_1 = 256
@@ -34,12 +35,12 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(c, filter_1, kernel_size=3, stride=1)
         self.bn1 = nn.BatchNorm2d(filter_1)
         self.max2 = nn.MaxPool2d(kernel_size=3, stride=1)
-        self.conv3 = nn.Conv2d(filter_1, filter_2, kernel_size=3, stride=1)
-        self.bn3 = nn.BatchNorm2d(filter_2)
+        # self.conv3 = nn.Conv2d(filter_1, filter_2, kernel_size=3, stride=1)
+        # self.bn3 = nn.BatchNorm2d(filter_2)
 
         conv_out_size = conv2d_output_size(input_size=[c, d, h], out_channels=filter_1, padding=0, kernel_size=3, stride=1)
         conv_out_size = conv2d_output_size(conv_out_size, out_channels=filter_1, padding=0, kernel_size=3, stride=1)
-        conv_out_size = conv2d_output_size(conv_out_size, out_channels=filter_2, padding=0, kernel_size=3, stride=1)
+        # conv_out_size = conv2d_output_size(conv_out_size, out_channels=filter_2, padding=0, kernel_size=3, stride=1)
         x = math.prod(conv_out_size)
         self.head = nn.Linear(x, outputs)
 

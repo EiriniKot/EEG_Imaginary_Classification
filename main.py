@@ -43,7 +43,7 @@ if cwt:
 split = False
 if split:
     sets_path = [os.path.join('torch_cwt', dt) for dt in os.listdir('torch_cwt')]
-    split_ttv(sets_path)
+    split_ttv(sets_path, folder='torch_split', train=0.7, val=0.15)
 
 train = True
 if train:
