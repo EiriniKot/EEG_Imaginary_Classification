@@ -96,7 +96,7 @@ def split_ttv(sets_path, folder = 'torch_split', train=0.7, val=0.15):
         shuffled_y = []
 
         n_train_s = int(train*len(torch_set))
-        n_valid_s = int(val * len(torch_set))
+        n_valid_s = int(val*len(torch_set))
 
         for input_s, label in iterator:
             shuffled_X.append(input_s)

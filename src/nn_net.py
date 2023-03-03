@@ -30,7 +30,6 @@ def conv2d_output_size(input_size, out_channels, padding, kernel_size, stride, d
 class Net(nn.Module):
     def __init__(self, c, d, h, outputs):
         filter_1 = 256
-        filter_2 = 128
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(c, filter_1, kernel_size=3, stride=1)
         self.bn1 = nn.BatchNorm2d(filter_1)
@@ -40,7 +39,6 @@ class Net(nn.Module):
 
         conv_out_size = conv2d_output_size(input_size=[c, d, h], out_channels=filter_1, padding=0, kernel_size=3, stride=1)
         conv_out_size = conv2d_output_size(conv_out_size, out_channels=filter_1, padding=0, kernel_size=3, stride=1)
-        # conv_out_size = conv2d_output_size(conv_out_size, out_channels=filter_2, padding=0, kernel_size=3, stride=1)
         x = math.prod(conv_out_size)
         self.head = nn.Linear(x, outputs)
 
@@ -48,7 +46,6 @@ class Net(nn.Module):
         x = torch.sigmoid(x).float()
         x = self.bn1(F.relu(self.conv1(x)))
         x = F.relu(self.max2(x))
-        x = self.bn3(F.relu(self.conv3(x)))
         x = x.view(x.size(0), -1)
         x = F.softmax(self.head(x), dim=1)
         return x

@@ -12,10 +12,11 @@ from src.preprocessing import dataset_to_torch_save, apply_stft, split_ttv, appl
 from src.utils import run_train_nn, dataset_loaders
 from src.nn_net import Net
 import torch
+from sklearn.svm import SVC
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-
+# Change this path into your data path!
 dataset = '/home/eirini/Documents/biomedical/Imaginary_vis/session2/'
 label_categories = os.listdir(dataset)
 f = open('onehot_info.json')
@@ -31,7 +32,7 @@ if stft:
     sets_path = [os.path.join('torch_data', dt) for dt in os.listdir('torch_data')]
     o = apply_stft(sets_path, return_tensor=True, save=True)
 
-cwt = False
+cwt = True
 if cwt:
     """
     Performs a continuous wavelet transform on data, using the wavelet function.
@@ -40,7 +41,7 @@ if cwt:
     sets_path = [os.path.join('torch_data', dt) for dt in os.listdir('torch_data')]
     apply_cwt(sets_path)
 
-split = False
+split = True
 if split:
     sets_path = [os.path.join('torch_cwt', dt) for dt in os.listdir('torch_cwt')]
     split_ttv(sets_path, folder='torch_split', train=0.7, val=0.15)
@@ -48,9 +49,9 @@ if split:
 train = True
 if train:
     sets_path = [os.path.join('torch_split', dt) for dt in os.listdir('torch_split')]
-    loaders = dataset_loaders(paths=sets_path, batch_size=10, shuffle=True)
+    loaders = dataset_loaders(paths=sets_path, batch_size=12, shuffle=True)
 
-    network = Net(c=63, d=51, h=44, outputs=4).to(device)
+    network = Net(c=63, d=9, h=359, outputs=4).to(device)
 
     opt = torch.optim.Adam(network.parameters(), lr=0.0005)
     run_train_nn(datasets_loaders=loaders,
@@ -59,23 +60,3 @@ if train:
                  epochs=100,
                  loss_fn=torch.nn.CrossEntropyLoss(),
                  device= torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-
-
-
-
-
-# Moving Average
-# fft
-# either 1d either 2d
-# Low pass -> inverse
-# pca to drop features
-
-# Scaling Normalization
-# Random Forest, LSTM, Kmeans, Conv
-
-
-
-
-
-
-# time frequency distributions (TFD), fast fourier transform (FFT), eigenvector methods (EM), wavelet transform (WT), and auto regressive method (ARM)

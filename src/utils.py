@@ -36,7 +36,7 @@ def run_train_nn(datasets_loaders:dict, network, optimizer, epochs, loss_fn, dev
                                          datasets_loaders['valid_set_loader'],
                                          optimizer, network, loss_fn, print_step=10,
                                          device = device)
-        print(f'Epoch number {ep} ---> train loss: {round(t_loss,4)}  train accuracy: {t_acc} val loss: {round(v_loss,4)} val accuracy: {v_acc}')
+        print(f'Epoch number {ep} ---> train loss: {round(t_loss,4)}  train accuracy: {round(t_acc,4)} val loss: {round(v_loss,4)} val accuracy: {round(v_acc,4)}')
         print('\n')
 
 
@@ -80,17 +80,22 @@ def train_one_epoch(training_loader, val_loader, optimizer, network, loss_fn, pr
         for i, data in enumerate(val_loader):
             # Every data instance is an input + label pair
             inputs, labels = data
+            print(inputs)
             outputs = network(inputs)
             # Compute the loss and its gradients
             loss = loss_fn(outputs, labels)
+            print(labels)
+            print(outputs)
             correct_indexes = torch.argmax(labels ,1)
             prect_indexes = torch.argmax(outputs, 1)
             val_acc += float(torch.sum(correct_indexes == prect_indexes))/len(correct_indexes)
             # Gather data and report
             running_loss += loss.item()
 
+        # printing first 10 Actual and predicted outputs of Test brain signals
+        print("Predicted:  ", prect_indexes)
+        print("Actual:     ", correct_indexes)
+
     val_loss = float(running_loss/len(val_loader))
     val_acc = float(val_acc/len(val_loader))
-    # print(f'Validation loss is {round(val_loss, 4)}')
-
     return last_loss, val_loss, val_acc, tr_acc
